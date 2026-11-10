@@ -80,4 +80,19 @@ class DatabaseHelper(context : Context) : SQLiteOpenHelper(context, DATABASE_NAM
 
         return usuarioEncontrado
     }
+
+    fun obtenerNombreUsuario(identificador: String): String? {
+        val db = readableDatabase
+        val query = "SELECT $COL_USUARIO FROM $TABLE_USUARIOS WHERE $COL_CORREO = ? OR $COL_USUARIO = ?"
+        val cursor = db.rawQuery(query, arrayOf(identificador, identificador))
+
+        var nombre: String? = null
+        if (cursor.moveToFirst()) {
+            nombre = cursor.getString(cursor.getColumnIndexOrThrow(COL_USUARIO))
+        }
+
+        cursor.close()
+        db.close()
+        return nombre
+    }
 }

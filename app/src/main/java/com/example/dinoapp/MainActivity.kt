@@ -57,9 +57,13 @@ class MainActivity : AppCompatActivity() {
         if (resultado) {
             Toast.makeText(this, "Bienvenido :D", Toast.LENGTH_SHORT).show()
 
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
+            val nombreReal = dbHelper.obtenerNombreUsuario(identificador) ?: "Usuario"
 
+            val intent = Intent(this, HomeActivity::class.java).apply {
+                putExtra("EXTRA_USER_NAME", nombreReal)
+            }
+
+            startActivity(intent)
             finish()
         } else {
             Toast.makeText(this, "Usuario/Correo o contraseña incorrectos", Toast.LENGTH_SHORT).show()

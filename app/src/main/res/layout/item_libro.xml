@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="160dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginEnd="16dp"
+    android:background="?attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/imgLibro"
+        android:layout_width="160dp"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:background="#2E4F4F" />
+
+    <TextView
+        android:id="@+id/txtNombreLibro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/kreon"
+        android:text="Nombre del dinosaurio"
+        android:textColor="#6E441D"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:gravity="center"
+        android:ellipsize="end" />
+
+</LinearLayout>
