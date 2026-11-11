@@ -1,8 +1,10 @@
 package com.example.dinoapp
 
 import android.os.Bundle
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -18,6 +20,10 @@ class LibrosActivity : AppCompatActivity() {
     private lateinit var txtNombre: TextView
     private lateinit var txtInfo: TextView
 
+    private lateinit var btnFavorito : ImageButton
+
+    private var albumFavorito = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -26,6 +32,7 @@ class LibrosActivity : AppCompatActivity() {
         imgDino = findViewById(R.id.imgDino)
         txtNombre = findViewById(R.id.txtNombre)
         txtInfo = findViewById(R.id.txtInfo)
+        btnFavorito = findViewById(R.id.btnFavorito)
 
         val dinosaurName = intent.getStringExtra("EXTRA_DINOSAUR_NAME") ?: "Tiranosaurio"
 
@@ -65,5 +72,23 @@ class LibrosActivity : AppCompatActivity() {
                 txtInfo.text = "Error de conexión: ${t.message}"
             }
         })
+
+        btnFavorito.setOnClickListener {
+
+            albumFavorito = !albumFavorito
+
+            if(albumFavorito) {
+
+                btnFavorito.setImageResource(R.drawable.favorito)
+                Toast.makeText(this, "Dinosaurio agregado a favoritos", Toast.LENGTH_SHORT).show()
+
+            } else{
+
+                btnFavorito.setImageResource(R.drawable.no_favorito)
+                Toast.makeText(this, "Dinosaurio eliminado de favoritos", Toast.LENGTH_SHORT).show()
+
+            }
+
+        }
     }
 }

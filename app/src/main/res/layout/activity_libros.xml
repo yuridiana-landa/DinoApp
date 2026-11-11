@@ -1,60 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#FFFFFF"
     tools:context=".LibrosActivity">
 
-    <LinearLayout
+    <!-- ScrollView para que todo el contenido hacia abajo se pueda desplazar -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/imgDino"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:scaleType="centerCrop"
-            android:background="#2E4F4F"
-            android:layout_marginBottom="16dp"
-            android:elevation="2dp" />
-
-        <TextView
-            android:id="@+id/txtNombre"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/kavoon"
-            android:text="Nombre del Dinosaurio"
-            android:textColor="#5B844E"
-            android:textSize="26sp"
-            android:gravity="center"
-            android:layout_marginBottom="16dp" />
+            android:orientation="vertical"
+            android:padding="24dp">
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="#EAF1DA"
-            app:cardCornerRadius="2dp"
-            app:cardElevation="1dp"
-            app:cardUseCompatPadding="true"
-            app:strokeColor="#BFD591"
-            app:strokeWidth="2dp">
+            <FrameLayout
+                android:id="@+id/contenedorImagenDino"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_marginBottom="16dp"
+                android:elevation="2dp">
+
+                <ImageView
+                    android:id="@+id/imgDino"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:background="#2E4F4F" />
+
+                <ImageButton
+                    android:id="@+id/btnFavorito"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:layout_gravity="top|end"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/bg_boton_circular"
+                    android:padding="15dp"
+                    android:src="@drawable/no_favorito" />
+
+            </FrameLayout>
 
             <TextView
-                android:id="@+id/txtInfo"
+                android:id="@+id/txtNombre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:fontFamily="@font/kreon"
-                android:text="Cargando información..."
-                android:textColor="#404040"
-                android:textSize="22sp"
-                android:textStyle="bold"/>
+                android:fontFamily="@font/kavoon"
+                android:text="Nombre del Dinosaurio"
+                android:textColor="#5B844E"
+                android:textSize="26sp"
+                android:gravity="center"
+                android:layout_marginBottom="16dp" />
 
-        </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="#EAF1DA"
+                app:cardCornerRadius="2dp"
+                app:cardElevation="1dp"
+                app:cardUseCompatPadding="true"
+                app:strokeColor="#BFD591"
+                app:strokeWidth="2dp">
 
-    </LinearLayout>
-</ScrollView>
+                <TextView
+                    android:id="@+id/txtInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:fontFamily="@font/kreon"
+                    android:text="Cargando información..."
+                    android:textColor="#404040"
+                    android:textSize="22sp"
+                    android:textStyle="bold"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</FrameLayout>
