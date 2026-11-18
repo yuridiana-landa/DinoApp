@@ -19,10 +19,11 @@ class LibrosActivity : AppCompatActivity() {
     private lateinit var imgDino: ImageView
     private lateinit var txtNombre: TextView
     private lateinit var txtInfo: TextView
+    private lateinit var btnFavorito: ImageButton
 
-    private lateinit var btnFavorito : ImageButton
-
-    private var albumFavorito = false
+    private var dinoFavorito = false
+    private lateinit var dbHelper: DatabaseHelper
+    private var dinosaurName: String = "Tiranosaurio"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +35,10 @@ class LibrosActivity : AppCompatActivity() {
         txtInfo = findViewById(R.id.txtInfo)
         btnFavorito = findViewById(R.id.btnFavorito)
 
-        val dinosaurName = intent.getStringExtra("EXTRA_DINOSAUR_NAME") ?: "Tiranosaurio"
+        dbHelper = DatabaseHelper(this)
+
+        // Obtenemos el nombre del dinosaurio enviado por el Intent
+        dinosaurName = intent.getStringExtra("EXTRA_DINOSAUR_NAME") ?: "Tiranosaurio"
 
         obtenerInfoDinosaurio(dinosaurName)
     }
@@ -62,6 +66,12 @@ class LibrosActivity : AppCompatActivity() {
                         } else {
                             imgDino.setImageResource(android.R.drawable.ic_menu_gallery)
                         }
+
+                        // Generamos un ID único basado en el nombre del dinosaurio para la BD
+                        val idDino = wikiResponse.title.hashCode().toLong()
+
+                        // Verificamos si ya está en favoritos una vez cargada la info
+                        configurarFavoritos(idDino)
                     }
                 } else {
                     txtInfo.text = "No se encontró información detallada para este dinosaurio."
@@ -72,23 +82,45 @@ class LibrosActivity : AppCompatActivity() {
                 txtInfo.text = "Error de conexión: ${t.message}"
             }
         })
+    }
+
+    private fun configurarFavoritos(idDino: Long) {
+        // Verificar si el dinosaurio se encuentra como favorito
+        dinoFavorito = dbHelper.existeDinoFav(idDino)
+        actualizarIcono()
 
         btnFavorito.setOnClickListener {
+            if (dinoFavorito) {
+                val eliminado = dbHelper.eliminarDinoFavorito(idDino)
 
-            albumFavorito = !albumFavorito
+                if (eliminado) {
+                    dinoFavorito = false
+                    Toast.makeText(this, "Dinosaurio eliminado de favoritos", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                val guardado = dbHelper.guardarDinoFavorito(
+                    idDino,
+                    "",
+                    txtNombre.text.toString(),
+                    txtInfo.text.toString()
+                )
 
-            if(albumFavorito) {
-
-                btnFavorito.setImageResource(R.drawable.favorito)
-                Toast.makeText(this, "Dinosaurio agregado a favoritos", Toast.LENGTH_SHORT).show()
-
-            } else{
-
-                btnFavorito.setImageResource(R.drawable.no_favorito)
-                Toast.makeText(this, "Dinosaurio eliminado de favoritos", Toast.LENGTH_SHORT).show()
-
+                if (guardado) {
+                    dinoFavorito = true
+                    Toast.makeText(this, "Dinosaurio agregado a favoritos", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "El dinosaurio ya esta en favoritos", Toast.LENGTH_SHORT).show()
+                }
             }
+            actualizarIcono()
+        }
+    }
 
+    private fun actualizarIcono() {
+        if (dinoFavorito) {
+            btnFavorito.setImageResource(R.drawable.favorito)
+        } else {
+            btnFavorito.setImageResource(R.drawable.no_favorito)
         }
     }
 }

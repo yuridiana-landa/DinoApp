@@ -9,7 +9,7 @@ class DatabaseHelper(context : Context) : SQLiteOpenHelper(context, DATABASE_NAM
 
     companion object {
         private const val DATABASE_NAME = "dinoapp.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
 
         //tabla
         private const val TABLE_USUARIOS = "usuarios"
@@ -19,26 +19,47 @@ class DatabaseHelper(context : Context) : SQLiteOpenHelper(context, DATABASE_NAM
         private const val COL_USUARIO = "usuario"
         private const val COL_CORREO = "correo"
         private const val COL_PASSWORD = "password"
-    }
 
-    //Metodo para crear la base de datos y sus tablas
-    override fun onCreate(p0: SQLiteDatabase?) {
-        val crearTablaUsuarios = """
+        //Tabla para guardar los favoritos
+        private const val TABLE_FAVORITOS = "favoritos"
+        private const val COL_ID_FAVORITO = "id"
+        private const val COL_ID_DINO = "dino_id"
+        private const val COL_IMAGEN = "imagen"
+        private const val COL_NOMBRE = "nombre"
+        private const val COL_INFO = "informacion"
+
+        private const val CREATE_TABLE_FAVORITOS = """
+            CREATE TABLE $TABLE_FAVORITOS (
+                $COL_ID_FAVORITO INTEGER PRIMARY KEY AUTOINCREMENT,
+                $COL_ID_DINO INTEGER UNIQUE NOT NULL,
+                $COL_IMAGEN TEXT,
+                $COL_NOMBRE TEXT NOT NULL,
+                $COL_INFO TEXT NOT NULL
+            )
+        """
+
+        private const val CREATE_TABLE_USUARIOS = """
             CREATE TABLE $TABLE_USUARIOS (
                 $COL_ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 $COL_USUARIO TEXT NOT NULL UNIQUE,
                 $COL_CORREO TEXT NOT NULL UNIQUE,
                 $COL_PASSWORD TEXT NOT NULL
             )
-        """.trimIndent()
+        """
+    }
 
-        p0?.execSQL(crearTablaUsuarios)
+    //Metodo para crear la base de datos y sus tablas
+    override fun onCreate(p0: SQLiteDatabase?) {
+        p0?.execSQL(CREATE_TABLE_USUARIOS)
+        p0?.execSQL(CREATE_TABLE_FAVORITOS)
     }
 
     //Metodo para actualizar la base de datos
     override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {
-        p0?.execSQL("DROP TABLE IF EXISTS $TABLE_USUARIOS")
-        onCreate(p0)
+        // Validar la version actual de la base de datos
+        if(p1 < 2){
+            p0?.execSQL(CREATE_TABLE_FAVORITOS)
+        }
     }
 
     //Metodo para registrar un usuario (Insertar)
@@ -86,13 +107,64 @@ class DatabaseHelper(context : Context) : SQLiteOpenHelper(context, DATABASE_NAM
         val query = "SELECT $COL_USUARIO FROM $TABLE_USUARIOS WHERE $COL_CORREO = ? OR $COL_USUARIO = ?"
         val cursor = db.rawQuery(query, arrayOf(identificador, identificador))
 
-        var nombre: String? = null
+        var user: String? = null
         if (cursor.moveToFirst()) {
-            nombre = cursor.getString(cursor.getColumnIndexOrThrow(COL_USUARIO))
+            user = cursor.getString(cursor.getColumnIndexOrThrow(COL_USUARIO))
         }
 
         cursor.close()
         db.close()
-        return nombre
+        return user
+    }
+
+    //Metodo para insertar un registro desde la api
+    fun guardarDinoFavorito(idDino : Long, imagen : String, nombre : String, info : String) : Boolean {
+        val db = writableDatabase
+
+        val datos = ContentValues().apply {
+            put(COL_ID_DINO, idDino)
+            put(COL_IMAGEN, imagen)
+            put(COL_NOMBRE, nombre)
+            put(COL_INFO, info)
+        }
+
+        //Si hay errores lo ignara e inserta
+        val resultado = db.insertWithOnConflict(
+            TABLE_FAVORITOS,
+            null,
+            datos,
+            SQLiteDatabase.CONFLICT_IGNORE)
+
+        return resultado != -1L
+    }
+
+    //Metodo para eliminar un registro
+    fun eliminarDinoFavorito(idDino: Long) : Boolean {
+        val db = writableDatabase
+
+        val resultado = db.delete(
+            TABLE_FAVORITOS,
+            "$COL_ID_DINO = ?",
+            arrayOf(idDino.toString())
+        )
+
+        db.close()
+        return resultado > 0
+    }
+
+    //Metodo para consular la informacion del api
+    fun existeDinoFav(idDino: Long) : Boolean {
+        val db = readableDatabase
+
+        val cursor = db.rawQuery(
+            "SELECT $COL_ID_FAVORITO FROM $TABLE_FAVORITOS WHERE $COL_ID_DINO = ?",
+            arrayOf(idDino.toString())
+        )
+
+        val existe = cursor.moveToFirst()
+
+        cursor.close()
+
+        return existe
     }
 }
