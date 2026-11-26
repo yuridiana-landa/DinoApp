@@ -41,9 +41,7 @@ class HomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home)
 
         tvNombre = findViewById(R.id.tvNombre)
-
         val nombreUsuario = intent.getStringExtra("EXTRA_USER_NAME") ?: "Usuario"
-
         tvNombre.text = nombreUsuario
 
         contenedorTriasico = findViewById(R.id.contenedorTriasico)
@@ -62,11 +60,6 @@ class HomeActivity : AppCompatActivity() {
 
         menuNavegacion()
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.home)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
-            insets
-        }
     }
 
     private fun cargarEra(nombresDinos: List<String>, contenedor: LinearLayout) {

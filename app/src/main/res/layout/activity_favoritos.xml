@@ -29,6 +29,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:id="@+id/tvNombre"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/kavoon"
+            android:text="NOMBRE"
+            android:textColor="#5B844E"
+            android:textSize="32sp" />
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/perfil" />
 
     </LinearLayout>
 
@@ -59,6 +74,38 @@
                 android:paddingTop="20dp"
                 android:paddingEnd="20dp"
                 android:paddingBottom="105dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/kavoon"
+                    android:text="Favoritos"
+                    android:textColor="#936235"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:id="@+id/tvEstado"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/kreon"
+                    android:text="Cargando..."
+                    android:textColor="#936235"
+                    android:textSize="23sp"
+                    android:textStyle="bold" />
+
+                <GridLayout
+                    android:id="@+id/gridFavoritos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="3"
+                    android:alignmentMode="alignMargins"
+                    android:useDefaultMargins="false"
+                    android:layout_marginTop="20dp">
+
+
+
+                </GridLayout>
 
             </LinearLayout>
 

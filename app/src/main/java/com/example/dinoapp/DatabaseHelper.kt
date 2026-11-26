@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.example.dinoapp.modelo.DinoFavorito
 
 class DatabaseHelper(context : Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -167,4 +168,51 @@ class DatabaseHelper(context : Context) : SQLiteOpenHelper(context, DATABASE_NAM
 
         return existe
     }
+
+    //Metodo para consultar toda la informacion del api
+    fun obtenerDinoFavorito() : List<DinoFavorito> {
+
+        //Crear lista
+        val listaFavorito = mutableListOf<DinoFavorito>()
+        val db = readableDatabase
+
+        val query_sql = """
+            SELECT 
+                $COL_ID_FAVORITO,
+                $COL_ID_DINO,
+                $COL_IMAGEN,
+                $COL_NOMBRE,
+                $COL_INFO
+            FROM $TABLE_FAVORITOS
+            ORDER BY $COL_ID_FAVORITO DESC
+        """.trimIndent()
+
+        //Crear cursor para acceder a la informacion
+        val cursor = db.rawQuery(query_sql, null)
+
+        //Verificar si hubo resultados
+        if(cursor.moveToFirst()){
+
+            //Ciclo para recorrer la informacion
+            do {
+
+                val dino = DinoFavorito(
+                    dinoID = cursor.getLong(0),
+                    imagen = cursor.getString(1) ?: "",
+                    nombre = cursor.getString(2) ?: "Dino desconocido",
+                    info = cursor.getString(3) ?: "Informacion desconocida"
+                )
+
+                //Guardar variable como un elemento mas de la lista
+                listaFavorito.add(dino)
+
+            } while (cursor.moveToNext())
+
+        }
+
+        cursor.close()
+        return listaFavorito
+
+    }
+
 }
